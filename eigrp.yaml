@@ -1,0 +1,95 @@
+---
+- name: EIGRP Named Config Compatible con CSR1000v + Loopbacks + Verificación
+  hosts: CSR1kv
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Configurar Loopback33 con IPv4 e IPv6
+      ios_config:
+        parents: "interface Loopback33"
+        lines:
+          - description EIGRP_LOOPBACK33
+          - no shutdown
+          - ip address 33.33.33.33 255.255.255.255
+          - ipv6 address 3001:ABCD:ABCD:1::1/128
+
+    - name: Habilitar IPv6 unicast routing
+      ios_config:
+        lines:
+          - ipv6 unicast-routing
+
+    - name: Eigrp nombrado
+      ios_config:
+        lines:
+          - router eigrp EIGRP-Examen
+
+    - name: crear address family
+      ios_config:
+        parents:
+          - router eigrp EIGRP-Examen
+          - address-family ipv4 unicast autonomous-system 100
+          - af-interface Loopback33
+        lines:
+          - passive
+          - no shutdown
+
+    - name: Loopback33 pasiva
+      ios_config:
+        parents:
+          - router eigrp EIGRP-Examen
+          - address-family ipv6 unicast autonomous-system 100
+          - af-interface Loopback33
+        lines:
+          - passive
+          - no shutdown
+
+    - name: SHOW RUNNING CONFIG EIGRP
+      ios_command:
+        commands:
+          - show running-config | section eigrp
+      register: eigrp_config
+
+    - name: EIGRP
+      debug:
+        var: eigrp_config.stdout_lines
+
+    - name: INTERFACE BRIEF
+      ios_command:
+        commands:
+          - show ip interface brief
+      register: ipv4_interfaces
+
+    - name: IPV4 INTERFACES
+      debug:
+        var: ipv4_interfaces.stdout_lines
+
+    - name: IPV6 BRIEF
+      ios_command:
+        commands:
+          - show ipv6 interface brief
+      register: ipv6_interfaces
+
+    - name: salida IPv6
+      debug:
+        var: ipv6_interfaces.stdout_lines
+
+    - name: SHOW RUNNING CONFIG
+      ios_command:
+        commands:
+          - show running-config
+      register: running_config
+
+    - name: running-config completo
+      debug:
+        var: running_config.stdout_lines
+
+    - name: SHOW VERSION
+      ios_command:
+        commands:
+          - show version
+      register: version_info
+
+    - name: información del sistema
+      debug:
+        var: version_info.stdout_lines
