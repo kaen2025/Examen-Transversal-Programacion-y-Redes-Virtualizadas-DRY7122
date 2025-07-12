@@ -1,4 +1,4 @@
-rom ncclient import manager
+rom ncclient import manager #cargar config por ncclient
 
 # Datos de conexión al CSR1000v
 router = {
