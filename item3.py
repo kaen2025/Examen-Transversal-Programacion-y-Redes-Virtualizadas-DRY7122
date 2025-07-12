@@ -2,7 +2,7 @@ import pyotp
 import sqlite3
 import hashlib
 import uuid
-from flask import Flask, request
+from flask import Flask, request #
 
 app = Flask(__name__)
 db_name = 'examen.db'
