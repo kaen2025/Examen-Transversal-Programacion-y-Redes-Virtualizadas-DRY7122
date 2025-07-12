@@ -1,5 +1,5 @@
 ---
-- name: EIGRP Named Config Compatible con CSR1000v + Loopbacks + Verificación
+- name: EIGRP Named Config Compatible con CSR1000v + Loopbacks + Verificación #EIGRP
   hosts: CSR1kv
   gather_facts: false
   connection: local
