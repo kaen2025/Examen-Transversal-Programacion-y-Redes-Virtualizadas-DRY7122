@@ -1,4 +1,4 @@
-conexion netconf.py                                                                                                                                                                from ncclient import manager
+conexion netconf.py   #conectarse por netconf                                                                                                                                                             from ncclient import manager
 
 try:
     with manager.connect(
